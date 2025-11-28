@@ -1,0 +1,21 @@
+size:
+6812 x 14
+
+Missing values:
+11.7 %
+- average_speed_diff : 2200 (32%)
+- average_cloudiness : 2682 (39%)
+- average_rain: 6249 (92%)
+
+Duplicate rows: 
+0
+
+Constant features:
+- city_name
+- average_precipitation
+
+X valores Negativos
+
+Comentários:
+- Passar average_speed_diff, average_cloudiness, luminosity -> ordinal numérico
+- Apagar average_rain
