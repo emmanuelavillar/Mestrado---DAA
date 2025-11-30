@@ -19,3 +19,31 @@ X valores Negativos
 Comentários:
 - Passar average_speed_diff, average_cloudiness, luminosity -> ordinal numérico
 - Apagar average_rain
+
+LUMINOSITY_N:
+map_dict = {
+    "DARK": 0,
+    "LOW_LIGHT": 1,
+    "LIGHT": 2
+}
+
+AVERAGE_CLOUDINESS_N:
+map_cloudiness = {
+    "céu limpo": 0,
+    "céu claro": 1,
+    "céu pouco nublado": 2,
+    "algumas nuvens": 3,
+    "nuvens dispersas": 4,
+    "nuvens quebradas": 5,
+    "nuvens quebrados": 5,
+    "tempo nublado": 6,
+    "nublado": 7
+}
+
+AVERAGE_SPEED_DIFF_N:
+map_dict = {
+    "Low": 0,
+    "Medium": 1,
+    "High": 2,
+    "Very_High": 3
+}

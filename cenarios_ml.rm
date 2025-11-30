@@ -1,0 +1,15 @@
+1.
+
+X: ['AVERAGE_FREE_FLOW_SPEED',
+       'AVERAGE_TIME_DIFF', 'AVERAGE_FREE_FLOW_TIME',
+       'AVERAGE_TEMPERATURE', 'AVERAGE_ATMOSP_PRESSURE', 'AVERAGE_HUMIDITY',
+       'AVERAGE_WIND_SPEED', 'year', 'month', 'day',
+       'hour', 'weekday', 'is_weekend', 'is_holiday', 'season', 'LUMINOSITY_N', 'AVERAGE_CLOUDINESS_N',
+       'is_peak_hour', 'poor_visibility', 'hour_weekday', 'time_ratio']
+
+y: 'AVERAGE_SPEED_DIFF_N'
+
+Tratamento:
+- Apagou os registos onde a target é null
+- Preencheu os nulos de AVERAGE_CLOUDINESS_N com base em LUMINOSITY_N
+
