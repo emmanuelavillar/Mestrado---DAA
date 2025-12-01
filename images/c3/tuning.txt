@@ -1,0 +1,24 @@
+catboost = CatBoostClassifier(
+    auto_class_weights='Balanced',
+    depth=3,  
+    learning_rate=0.005,  
+    iterations=2000,
+    border_count=32, 
+    boosting_type='Plain',
+    grow_policy='SymmetricTree',
+    l2_leaf_reg=50, 
+    od_type='Iter',
+    od_wait=15,
+    random_state=n,
+    verbose=True,
+    
+    min_data_in_leaf=50, 
+    rsm=0.5, 
+    bootstrap_type='Bernoulli',
+    subsample=0.7, 
+    random_strength=3.0,  
+    use_best_model=True
+)
+
+balancedrandomforest= BalancedRandomForestClassifier(class_weight = None, criterion= 'gini', max_depth =10, min_samples_leaf = 2, min_samples_split= 2, n_estimators =100, replacement =True, sampling_strategy='auto',
+                                                     bootstrap=True, oob_score=True)

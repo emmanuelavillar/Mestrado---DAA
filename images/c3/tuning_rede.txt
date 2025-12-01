@@ -1,0 +1,110 @@
+
+
+# Versão com Early Stopping
+preprocessor.fit(X_train)
+X_train_processed = preprocessor.transform(X_train)
+X_val_processed = preprocessor.transform(X_val)
+X_test_processed = preprocessor.transform(X_test)
+
+input_dim = X_train_processed.shape[1]
+n_classes = len(np.unique(y_train))
+
+# Rede Neural
+nn_model = keras.Sequential([
+    layers.Input(shape=(input_dim,)),
+    layers.Dense(128, activation='relu', kernel_regularizer=regularizers.l2(0.01)),
+    layers.BatchNormalization(),
+    layers.Dropout(0.25),
+    layers.Dense(64, activation='relu', kernel_regularizer=regularizers.l2(0.01)),
+    layers.BatchNormalization(),
+    layers.Dropout(0.25),
+    layers.Dense(32, activation='relu', kernel_regularizer=regularizers.l2(0.05)),
+    layers.BatchNormalization(),
+    layers.Dense(n_classes if n_classes > 2 else 1,
+                activation='softmax' if n_classes > 2 else 'sigmoid')
+])
+
+nn_model.compile(
+    optimizer=keras.optimizers.Adam(learning_rate=0.005),
+    loss='categorical_crossentropy' if n_classes > 2 else 'binary_crossentropy',
+    metrics=['accuracy']
+)
+
+# Função com Early Stopping
+def train_and_plot_nn_with_early_stop(X_train, y_train, X_val, y_val, model, 
+                                     epochs=200, batch_size=32, patience=15):
+    """Treina rede neural com early stopping e plota história"""
+    # Preparar labels
+    if len(np.unique(y_train)) > 2:
+        y_train_nn = keras.utils.to_categorical(y_train)
+        y_val_nn = keras.utils.to_categorical(y_val)
+    else:
+        y_train_nn = y_train.reshape(-1, 1)
+        y_val_nn = y_val.reshape(-1, 1)
+    
+    # Callbacks
+    early_stopping = callbacks.EarlyStopping(
+        monitor='val_loss',
+        patience=12,
+        restore_best_weights=True,
+        verbose=1
+    )
+    
+    # Reduce learning rate on plateau
+    reduce_lr = callbacks.ReduceLROnPlateau(
+        monitor='val_loss',
+        factor=0.5,
+        patience=8,
+        min_lr=1e-6,
+        verbose=1
+    )
+    
+    # Treinar com callbacks
+    history = model.fit(
+        X_train, y_train_nn,
+        validation_data=(X_val, y_val_nn),
+        epochs=epochs,
+        batch_size=batch_size,
+        callbacks=[early_stopping, reduce_lr],
+        verbose=1
+    )
+    
+    # Plotar
+    plt.figure(figsize=(10,5))
+    plt.plot(history.history['loss'], label='Train Loss')
+    plt.plot(history.history['val_loss'], label='Validation Loss')
+    
+    if 'accuracy' in history.history:
+        plt.plot(history.history['accuracy'], label='Train Accuracy', linestyle='--')
+        plt.plot(history.history['val_accuracy'], label='Validation Accuracy', linestyle='--')
+    
+    # Marcar onde parou o early stopping
+    if early_stopping.stopped_epoch > 0:
+        best_epoch = early_stopping.stopped_epoch - patience
+        plt.axvline(x=best_epoch, color='r', linestyle='--', alpha=0.5, label=f'Best Epoch ({best_epoch})')
+    
+    plt.xlabel('Época')
+    plt.ylabel('Valor')
+    plt.title('Curva de Aprendizado - Rede Neural (com Early Stopping)')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.show()
+    
+    # Mostrar informações do early stopping
+    if early_stopping.stopped_epoch > 0:
+        print(f"\nEarly stopping at epoch {early_stopping.stopped_epoch}")
+        print(f"Best epoch: {early_stopping.stopped_epoch - patience}")
+        print(f"Best val_loss: {min(history.history['val_loss']):.4f}")
+    
+    return model, history
+
+# Treinar com Early Stopping
+print("Treinando Rede Neural com Early Stopping...")
+trained_nn, history_nn = train_and_plot_nn_with_early_stop(
+    X_train_processed, y_train,
+    X_val_processed, y_val,
+    nn_model,
+    epochs=200,
+    batch_size=32,
+    patience=12
+)
