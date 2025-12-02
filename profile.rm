@@ -42,8 +42,9 @@ map_cloudiness = {
 
 AVERAGE_SPEED_DIFF_N:
 map_dict = {
-    "Low": 0,
-    "Medium": 1,
-    "High": 2,
-    "Very_High": 3
+    "Low": 1,
+    "Medium": 2,
+    "High": 3,
+    "Very_High": 4,
+    "D": 0
 }
